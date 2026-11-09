@@ -1,0 +1,4 @@
+version: 1
+bundleID: io.github.salutatorian.openlabel.ipad
+product: OpenLabeliPad
+infoPath: Info.plist

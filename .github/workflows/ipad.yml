@@ -1,0 +1,32 @@
+name: iPad xtool development
+on:
+  push:
+    branches: [ipad-xtool]
+    paths: ['ipad/**', '.github/workflows/ipad.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  ipad:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test label encoder
+        working-directory: ipad
+        run: swift test
+      - name: Install pinned xtool
+        run: |
+          curl --fail --location https://github.com/xtool-org/xtool/releases/download/1.24.0/xtool.app.zip -o /tmp/xtool.zip
+          ditto -x -k /tmp/xtool.zip /tmp/xtool
+          find /tmp/xtool -type f -name xtool
+          echo /tmp/xtool/xtool.app/Contents/MacOS >> "$GITHUB_PATH"
+      - name: Build unsigned iPad app with xtool
+        working-directory: ipad
+        run: xtool dev build --ipa
+      - name: Check IPA
+        run: python3 ipad/check_ipa.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OpenLabel-iPad-unsigned-development
+          path: ipad/xtool/*.ipa
+          if-no-files-found: error
