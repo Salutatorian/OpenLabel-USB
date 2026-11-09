@@ -7,6 +7,7 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.salutatorian.openlabel.driver
+        PRODUCT_NAME: io.github.salutatorian.openlabel.driver
         SDKROOT: driverkit
         DRIVERKIT_DEPLOYMENT_TARGET: '22.0'
         ARCHS: arm64

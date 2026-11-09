@@ -75,4 +75,4 @@ Thanks to [REA](https://github.com/morluto/rea), Pillow, PyMuPDF, PyUSB, libusb 
 
 ## iPad development branch
 
-An experimental native SwiftUI editor and TSPL encoder is being built with xtool on the `ipad-xtool` branch. See [iPad development notes](https://github.com/Salutatorian/OpenLabel-USB/blob/ipad-xtool/ipad/README.md). It is an unsigned editor/export preview, not a direct USB printing release, and is not part of the desktop downloads.
+An experimental native SwiftUI editor and TSPL encoder is being built with xtool on the `ipad-xtool` branch. See [iPad development notes](https://github.com/Salutatorian/OpenLabel-USB/blob/ipad-xtool/ipad/README.md). It now includes a compiled USBDriverKit driver and app-side print transport, but device provisioning and physical iPad printing remain unverified. It is not part of the desktop downloads.

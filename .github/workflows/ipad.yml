@@ -35,10 +35,10 @@ jobs:
         run: xtool dev build --ipa
       - name: Check IPA
         run: python3 ipad/check_ipa.py
+      - name: Embed compiled driver (still requires real provisioning)
+        run: python3 ipad/bundle_driver.py
       - uses: actions/upload-artifact@v4
         with:
-          name: OpenLabel-iPad-unsigned-development
-          path: |
-            ipad/xtool/*.ipa
-            ipad/Driver/build/Build/Products/Debug-driverkit/*.dext/**
+          name: OpenLabel-iPad-USB-requires-DriverKit-signing
+          path: ipad/driver-artifacts/*
           if-no-files-found: error

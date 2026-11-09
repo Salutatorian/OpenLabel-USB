@@ -17,3 +17,6 @@ ipad/xtool/
 *.mobileprovision
 *.provisionprofile
 *.AppImage
+
+ipad/driver-artifacts/
+*.xcodeproj/

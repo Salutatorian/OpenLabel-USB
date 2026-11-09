@@ -2,7 +2,7 @@
 #include <IOKit/IOKitLib.h>
 
 static kern_return_t open_driver(io_connect_t *connection) {
-    io_service_t service = IOServiceGetMatchingService(kIOMainPortDefault,IOServiceMatching("OpenLabelUSBDriver"));
+    io_service_t service = IOServiceGetMatchingService(kIOMainPortDefault,IOServiceNameMatching("OpenLabelUSBDriver"));
     if (!service) return kIOReturnNotFound;
     kern_return_t result = IOServiceOpen(service,mach_task_self(),0,connection);
     IOObjectRelease(service);
