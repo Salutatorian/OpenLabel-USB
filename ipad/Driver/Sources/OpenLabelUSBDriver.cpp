@@ -72,7 +72,12 @@ kern_return_t OpenLabelUSBDriver::NewUserClient_Impl(uint32_t type, IOUserClient
 kern_return_t OpenLabelUSBDriver::MakeBuffer(uint64_t length, IOBufferMemoryDescriptor **buffer) {
     if (!ivars->opened || !ivars->interface) return kIOReturnNotOpen;
     if (!buffer || !length || length > 131072) return kIOReturnBadArgument;
-    return ivars->interface->CreateIOBuffer(kIOMemoryDirectionOut,length,buffer);
+    auto result = ivars->interface->CreateIOBuffer(kIOMemoryDirectionOut,length,buffer);
+    if (result == kIOReturnSuccess) {
+        result = (*buffer)->SetLength(length);
+        if (result != kIOReturnSuccess) OSSafeReleaseNULL(*buffer);
+    }
+    return result;
 }
 
 kern_return_t OpenLabelUSBDriver::Send(IOBufferMemoryDescriptor *buffer,uint32_t length,uint32_t *sent) {
