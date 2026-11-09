@@ -1,0 +1,22 @@
+name: OpenLabelUSBDriver
+targets:
+  OpenLabelUSBDriver:
+    type: driver-extension
+    platform: macOS
+    sources: [Sources]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.salutatorian.openlabel.driver
+        SDKROOT: driverkit
+        DRIVERKIT_DEPLOYMENT_TARGET: '22.0'
+        ARCHS: arm64
+        CLANG_CXX_LANGUAGE_STANDARD: c++17
+        INFOPLIST_FILE: Info.plist
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_ENTITLEMENTS: Driver.entitlements
+        CODE_SIGNING_ALLOWED: NO
+        HEADER_SEARCH_PATHS: $(inherited) $(DERIVED_SOURCES_DIR)
+    dependencies:
+      - sdk: DriverKit.framework
+      - sdk: USBDriverKit.framework
+    scheme: {}

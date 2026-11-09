@@ -7,7 +7,8 @@ let package = Package(
     products: [.library(name: "OpenLabeliPad", targets: ["OpenLabeliPad"])],
     targets: [
         .target(name: "LabelCore"),
-        .target(name: "OpenLabeliPad", dependencies: ["LabelCore"]),
+        .target(name: "DriverBridge", linkerSettings: [.linkedFramework("IOKit")]),
+        .target(name: "OpenLabeliPad", dependencies: ["LabelCore", "DriverBridge"]),
         .testTarget(name: "LabelCoreTests", dependencies: ["LabelCore"])
     ]
 )

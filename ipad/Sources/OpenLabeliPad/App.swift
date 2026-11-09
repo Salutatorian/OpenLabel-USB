@@ -4,6 +4,7 @@ import UIKit
 import PDFKit
 import UniformTypeIdentifiers
 import LabelCore
+import DriverBridge
 
 @main
 struct OpenLabelApp: App {
@@ -97,6 +98,10 @@ private struct ExportFile: FileDocument {
 }
 
 private struct LabelEditor: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var usbStatus: Int32 = -1
+    @State private var printing = false
+    @State private var printResult: String?
     @State private var text = "MY FIRST LABEL\nMade with OpenLabel"
     @State private var fontSize = 24.0
     @State private var gap = 3.0
@@ -136,12 +141,17 @@ private struct LabelEditor: View {
                         Button("Export print file", systemImage: "square.and.arrow.up") { prepareExport(png: false) }
                     }
                     .buttonStyle(.borderedProminent)
-                    .disabled(preview == nil)
+                    .disabled(preview == nil || printing)
+                    Button(printing ? "Printing..." : "Print over USB", systemImage: "printer") { printUSB() }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(preview == nil || usbStatus != 0 || printing)
+                    if let printResult { Text(printResult).font(.callout) }
                 }
                 .padding().background(.regularMaterial)
             }
         }
-        .onAppear { updatePreview() }
+        .onAppear { updatePreview(); checkUSB() }
+        .onChange(of: scenePhase) { _, phase in if phase == .active { checkUSB() } }
         .onChange(of: text) { _, _ in
             imported = nil
             source = "Editable text"
@@ -186,9 +196,12 @@ private struct LabelEditor: View {
             Button("Import image or PDF", systemImage: "doc.badge.plus") { choosingFile = true }
                 .buttonStyle(.bordered)
             Text(source).font(.caption).foregroundStyle(.secondary).lineLimit(3)
-            GroupBox("USB printing is not enabled") {
-                Text("This editor preview can save labels and printer-command files. Direct USB printing needs a properly provisioned DriverKit extension. No printer driver is included in this preview.")
-                    .font(.callout).frame(maxWidth: .infinity, alignment: .leading)
+            GroupBox("USB printer") {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(usbStatus == 0 ? "USB driver connected" : "USB driver unavailable (0x" + String(UInt32(bitPattern: usbStatus), radix: 16) + ")")
+                    Text("Connect the powered printer and enable the properly signed OpenLabel driver in Settings > General > Drivers. This development build still requires DriverKit provisioning.").font(.callout)
+                    Button("Refresh USB printer") { checkUSB() }
+                }.frame(maxWidth: .infinity, alignment: .leading)
             }
         }
     }
@@ -207,6 +220,30 @@ private struct LabelEditor: View {
                 ContentUnavailableView("Check label content", systemImage: "doc", description: Text(message ?? ""))
             }
         }
+    }
+
+    private func checkUSB() {
+        guard !printing else { return }
+        usbStatus = OLDriverStatus()
+    }
+
+    private func printUSB() {
+        do {
+            guard !printing, usbStatus == 0, let preview else { return }
+            let data = try LabelJob.encode(gray: Raster.gray(preview), gap: gap, copies: copies)
+            printing = true
+            printResult = nil
+            Task {
+                let result = await USBTransport.shared.send(data)
+                printing = false
+                if result.status == 0 {
+                    printResult = "Sent \(result.sent) bytes over USB. Check the physical label."
+                } else {
+                    printResult = "USB error 0x" + String(UInt32(bitPattern: result.status), radix: 16) + ". Check the printer before retrying; the job may have partly printed."
+                }
+                checkUSB()
+            }
+        } catch { message = error.localizedDescription }
     }
 
     private func updatePreview() {

@@ -22,6 +22,14 @@ jobs:
           find /tmp/xtool -type f -name xtool
           echo /tmp/xtool/xtool.app/Contents/Resources/bin >> "$GITHUB_PATH"
           /tmp/xtool/xtool.app/Contents/Resources/bin/xtool --version
+      - name: Compile USB descriptor tests and DriverKit extension
+        working-directory: ipad/Driver
+        run: |
+          clang++ -std=c++17 -Wall -Wextra -Werror test_descriptors.cpp -o /tmp/openlabel-usb-tests
+          /tmp/openlabel-usb-tests
+          brew install xcodegen
+          xcodegen generate
+          xcodebuild -project OpenLabelUSBDriver.xcodeproj -scheme OpenLabelUSBDriver -configuration Debug -sdk driverkit -derivedDataPath build CODE_SIGNING_ALLOWED=NO ARCHS=arm64
       - name: Build unsigned iPad app with xtool
         working-directory: ipad
         run: xtool dev build --ipa
@@ -30,5 +38,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: OpenLabel-iPad-unsigned-development
-          path: ipad/xtool/*.ipa
+          path: |
+            ipad/xtool/*.ipa
+            ipad/Driver/build/Build/Products/Debug-driverkit/*.dext/**
           if-no-files-found: error
