@@ -15,7 +15,7 @@ No USBDriverKit extension is embedded. **There is no working direct USB print bu
 
 ## Why xtool helps, and where it stops
 
-xtool supports app building/signing/installation on Windows through WSL. Its current packager models applications and ordinary `.appex` extensions, not DriverKit `.dext` products. A regular/free Apple ID can provision ordinary apps subject to Apple's limits; it does not supply the DriverKit provisioning needed for this printer connection. A paid account alone does not mean all required USB entitlements have been approved.
+xtool supports app building/signing/installation on Windows through WSL. Its current packager models applications and ordinary `.appex` extensions, not DriverKit `.dext` products. A regular/free Apple ID can provision ordinary apps subject to Apple's limits; it does not supply the DriverKit provisioning needed for this printer connection. A paid account alone does not mean all required USB entitlements have been approved. You do not need a paid membership merely to use a properly distributed app; the requirement applies to the team that builds/signs the driver. A future driver-equipped release could be distributed to regular users.
 
 The remaining direct-USB work requires an M-series iPad, a DriverKit-enabled app ID/profile with the required USB transport permissions, an actual driver extension, compatible packaging/signing, and physical testing. It must match the MHT-L1081 (`0FE6:811E`), discover its printer-class bulk OUT endpoint, expose a bounded user-client write interface, and deliver the exact label bytes. No vendor firmware or driver binary should be reused.
 
@@ -52,3 +52,5 @@ xtool install /path/to/OpenLabeliPad.ipa
 Enter credentials only into the local interactive tool, never into chat or GitHub. xtool documents its use of private Apple APIs for password login and an Anisette service for device metadata. Follow its current instructions, including iPad trust/Developer Mode steps and free-account expiration/renewal limits. Signing the editor preview will not grant direct printer USB access.
 
 The iPad source follows the repository's AGPL-3.0-only license. It uses Apple's built-in PDFKit, not PyMuPDF.
+
+A Windows install helper is provided as `install-preview.ps1`. It requires an already configured regular WSL distribution and iPad pairing. It downloads pinned official xtool 1.24.0, keeps authentication interactive, and installs only the editor preview. The helper has been syntax-checked but has not been run against a physical iPad.

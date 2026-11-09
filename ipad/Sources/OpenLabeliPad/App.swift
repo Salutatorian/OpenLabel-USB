@@ -85,7 +85,7 @@ private enum Raster {
 }
 
 private struct ExportFile: FileDocument {
-    static var readableContentTypes: [UTType] { [.data] }
+    static var readableContentTypes: [UTType] { [.data, .png] }
     var data: Data
     init(data: Data = Data()) { self.data = data }
     init(configuration: ReadConfiguration) throws {
@@ -187,7 +187,7 @@ private struct LabelEditor: View {
                 .buttonStyle(.bordered)
             Text(source).font(.caption).foregroundStyle(.secondary).lineLimit(3)
             GroupBox("USB printing is not enabled") {
-                Text("This editor preview can save labels and printer-command files. Direct USB printing needs a DriverKit extension and Apple provisioning that a free Apple ID does not provide. No printer driver is included in this build.")
+                Text("This editor preview can save labels and printer-command files. Direct USB printing needs a properly provisioned DriverKit extension. No printer driver is included in this preview.")
                     .font(.callout).frame(maxWidth: .infinity, alignment: .leading)
             }
         }

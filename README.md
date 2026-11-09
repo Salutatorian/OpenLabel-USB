@@ -72,3 +72,7 @@ The [release workflow](.github/workflows/release.yml) builds all three variants,
 Public releases use **GNU AGPL-3.0-only**; see [LICENSE](LICENSE). This is compatible with the included PyMuPDF PDF dependency's open-source option. Dependency notices and source links are in [THIRD_PARTY.md](THIRD_PARTY.md).
 
 Thanks to [REA](https://github.com/morluto/rea), Pillow, PyMuPDF, PyUSB, libusb and PyInstaller. REA is an investigation tool, not a bundled runtime dependency. This project is independent of Milestone/MHT and is not endorsed by them. Vendor installers, drivers, firmware and proprietary font files are not redistributed.
+
+## iPad development branch
+
+An experimental native SwiftUI editor and TSPL encoder is being built with xtool on the `ipad-xtool` branch. See [iPad development notes](https://github.com/Salutatorian/OpenLabel-USB/blob/ipad-xtool/ipad/README.md). It is an unsigned editor/export preview, not a direct USB printing release, and is not part of the desktop downloads.

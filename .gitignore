@@ -6,3 +6,14 @@ dist/
 release-assets/
 *.spec
 .DS_Store
+
+# iPad development artifacts and local signing state
+.build/
+.swiftpm/
+.bsp/
+ipad/xtool/
+*.ipa
+*.p12
+*.mobileprovision
+*.provisionprofile
+*.AppImage
